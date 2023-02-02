@@ -4,13 +4,23 @@ class Question {
     this.correctAnswer = correctAnswer;
   }
 }
+class PlayerScore {
+  constructor(name, score) {
+    this.name = name;
+    this.score = score;
+    this.time = Date.now();
+  }
+}
+
 const questions = [];
 const qList = document.querySelector("#questions");
 const scoreDisplay = document.querySelector("#score");
 let score = 0;
+let questionsAnswered = 0;
 
 async function startButtonClick() {
   score = 0;
+  questionsAnswered = 0;
   scoreDisplay.innerText = score;
   //questions.length = 0;
   const url = new URL(
@@ -20,7 +30,6 @@ async function startButtonClick() {
   const response = await fetch(url);
   if (response.status === 200) {
     const jsonResponse = await response.json();
-    console.log(jsonResponse);
     questions.splice(0, questions.length);
 
     for (const result of jsonResponse.results) {
@@ -104,4 +113,25 @@ function guessButtonClick(question, cardBody, falseButton, trueButton, guess) {
   }
   trueButton.disabled = true;
   falseButton.disabled = true;
+  questionsAnswered++;
+  checkAllQuestionsAnswered();
+}
+
+function checkAllQuestionsAnswered() {
+  if (questionsAnswered == questions.length) {
+    const name = window.prompt("give me your name!");
+    const player = new PlayerScore(name, score);
+    const highscoreJson = localStorage.getItem("highscore");
+    if (highscoreJson.charAt(0) === "[") {
+      console.log(highscoreJson);
+      const highscore = JSON.parse(localStorage.getItem("highscore"));
+      highscore.push(player);
+      localStorage.setItem("highscore", JSON.stringify(highscore));
+    } else {
+      console.log("hej2");
+      const highscore = [];
+      highscore.push(player);
+      localStorage.setItem("highscore", JSON.stringify(highscore));
+    }
+  }
 }
