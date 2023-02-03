@@ -24,7 +24,7 @@ async function startButtonClick() {
   scoreDisplay.innerText = score;
   //questions.length = 0;
   const url = new URL(
-    `https://opentdb.com/api.php?amount=10&category=18&difficulty=easy&type=boolean`
+    `https://opentdb.com/api.php?amount=10&category=12&difficulty=easy&type=boolean`
   );
 
   const response = await fetch(url);
@@ -122,7 +122,7 @@ function checkAllQuestionsAnswered() {
     const name = window.prompt("give me your name!");
     const player = new PlayerScore(name, score);
     const highscoreJson = localStorage.getItem("highscore");
-    if (highscoreJson.charAt(0) === "[") {
+    if (!highscoreJson) {
       console.log(highscoreJson);
       const highscore = JSON.parse(localStorage.getItem("highscore"));
       highscore.push(player);
